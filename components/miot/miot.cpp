@@ -295,8 +295,6 @@ void Miot::process_message_(char *msg) {
   } else if (cmd == "result") {
     update_properties(&saveptr, expect_action_result_ ? mrfAction : mrfSet);
     send_reply_("ok");
-  } else if (cmd == "net") {
-    send_reply_(get_net_reply_());
   } else if (cmd == "time") {
     const char *arg = strtok_r(nullptr, " ", &saveptr);
     bool posix = arg && *arg && std::strcmp(arg, "posix") == 0;
