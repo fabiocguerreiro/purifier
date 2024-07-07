@@ -34,8 +34,6 @@ namespace miot {
 
 static const char *const TAG = "miot";
 static const int RECEIVE_TIMEOUT = 300;
-static const char *const NET_OFFLINE = "offline";
-static const char *const NET_UNPROV = "unprov";
 static const char *const NET_UAP = "uap";
 static const char *const NET_LAN = "lan";
 static const char *const NET_CLOUD = "cloud";
