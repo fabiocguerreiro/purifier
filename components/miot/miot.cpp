@@ -273,8 +273,8 @@ const char *Miot::get_net_reply_() {
   if (captive_portal::global_captive_portal != nullptr && captive_portal::global_captive_portal->is_active())
     return NET_UAP;
 #endif
-  if (network::is_provisioned())
-    return NET_UNPROV;
+ // if (network::is_provisioned())
+   // return NET_UNPROV;
   return NET_OFFLINE;
 }
 
