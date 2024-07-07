@@ -34,6 +34,8 @@ namespace miot {
 
 static const char *const TAG = "miot";
 static const int RECEIVE_TIMEOUT = 300;
+static const char *const NET_OFFLINE = "offline";
+static const char *const NET_UNPROV = "unprov";
 static const char *const NET_UAP = "uap";
 static const char *const NET_LAN = "lan";
 static const char *const NET_CLOUD = "cloud";
@@ -150,6 +152,15 @@ void Miot::queue_command(const char *fmt, ...) {
   queue_command(cmd);
 }
 
+void Miot::queue_net_change_command(bool force) {
+  const char *reply = get_net_reply_();
+  if (!force && reply == last_net_reply_)
+    return;
+  ESP_LOGI(TAG, "Network status changed to '%s'", reply);
+  queue_command("MIIO_net_change %s", reply);
+  last_net_reply_ = reply;
+}
+
 void Miot::set_property(uint32_t siid, uint32_t piid, const MiotValue &value) {
   switch (value.type) {
   case mvtInt:
@@ -253,6 +264,20 @@ void Miot::update_properties(char **saveptr, MiotResultFormat format) {
   }
 }
 
+const char *Miot::get_net_reply_() {
+  if (remote_is_connected())
+    return NET_CLOUD;
+  if (remote_is_connected())
+    return NET_LAN;
+#ifdef USE_CAPTIVE_PORTAL
+  if (captive_portal::global_captive_portal != nullptr && captive_portal::global_captive_portal->is_active())
+    return NET_UAP;
+#endif
+  if (remote_is_disabled())
+    return NET_UNPROV;
+  return NET_OFFLINE;
+}
+
 std::string Miot::get_time_reply_(bool posix) {
 #ifdef USE_TIME
   auto now = ESPTime::from_epoch_local(::time(nullptr));
@@ -293,6 +318,8 @@ void Miot::process_message_(char *msg) {
   } else if (cmd == "result") {
     update_properties(&saveptr, expect_action_result_ ? mrfAction : mrfSet);
     send_reply_("ok");
+  } else if (cmd == "net") {
+    send_reply_(get_net_reply_());
   } else if (cmd == "time") {
     const char *arg = strtok_r(nullptr, " ", &saveptr);
     bool posix = arg && *arg && std::strcmp(arg, "posix") == 0;
