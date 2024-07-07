@@ -255,20 +255,6 @@ void Miot::update_properties(char **saveptr, MiotResultFormat format) {
   }
 }
 
-const char *Miot::get_net_reply_() {
-  if (remote_is_connected())
-    return NET_CLOUD;
-  if (network::is_connected())
-    return NET_LAN;
-#ifdef USE_CAPTIVE_PORTAL
-  if (captive_portal::global_captive_portal != nullptr && captive_portal::global_captive_portal->is_active())
-    return NET_UAP;
-#endif
-//  if (network::is_disabled())
-//    return NET_UNPROV;
-  return NET_OFFLINE;
-}
-
 std::string Miot::get_time_reply_(bool posix) {
 #ifdef USE_TIME
   auto now = ESPTime::from_epoch_local(::time(nullptr));
