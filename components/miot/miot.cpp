@@ -273,9 +273,7 @@ const char *Miot::get_net_reply_() {
   if (captive_portal::global_captive_portal != nullptr && captive_portal::global_captive_portal->is_active())
     return NET_UAP;
 #endif
-  if (remote_is_disabled())
-    return NET_UNPROV;
-  return NET_OFFLINE;
+  if (remote_is_connected())
 }
 
 std::string Miot::get_time_reply_(bool posix) {
