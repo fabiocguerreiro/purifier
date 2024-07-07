@@ -276,6 +276,7 @@ const char *Miot::get_net_reply_() {
   if (network::is_disconnected())
     return NET_UNPROV;
   return NET_OFFLINE;
+#endif
 }
 
 std::string Miot::get_time_reply_(bool posix) {
