@@ -152,15 +152,6 @@ void Miot::queue_command(const char *fmt, ...) {
   queue_command(cmd);
 }
 
-void Miot::queue_net_change_command(bool force) {
-  const char *reply = get_net_reply_();
-  if (!force && reply == last_net_reply_)
-    return;
-  ESP_LOGI(TAG, "Network status changed to '%s'", reply);
-  queue_command("MIIO_net_change %s", reply);
-  last_net_reply_ = reply;
-}
-
 void Miot::set_property(uint32_t siid, uint32_t piid, const MiotValue &value) {
   switch (value.type) {
   case mvtInt:
